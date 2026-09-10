@@ -9,6 +9,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:4200',
       'https://skf-fitness.netlify.app',
+      /\.netlify\.app$/,   // sab netlify subdomains allow
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
