@@ -5,23 +5,20 @@ import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS for Angular frontend
   app.enableCors({
     origin: [
       'http://localhost:4200',
-      'https://skf-fitness.netlify.app',  // replace with your Netlify URL
+      'https://skf-fitness.netlify.app',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
   });
 
-  // Global validation
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-
-  // API prefix
   app.setGlobalPrefix('api');
 
-  await app.listen(3000);
-  console.log('SKF Fitness Backend running on http://localhost:3000/api');
+  const port = process.env.PORT || 3000;
+  await app.listen(port, '0.0.0.0');
+  console.log(`SKF Fitness Backend running on port ${port}`);
 }
 bootstrap();
