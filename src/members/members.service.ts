@@ -1,70 +1,65 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { MemberEntity } from './member.entity';
 import { CreateMemberDto } from './dto/create-member.dto';
 import * as bcrypt from 'bcryptjs';
 
-export interface Member {
-  id: number;
-  name: string;
-  email: string;
-  password: string;
-  phone: string;
-  membershipPlan: string;
-  joinedAt: Date;
-  isActive: boolean;
-}
-
-export type MemberPublic = Omit<Member, 'password'>;
+export type MemberPublic = Omit<MemberEntity, 'password'>;
 
 @Injectable()
 export class MembersService {
-  private members: Member[] = [];
-  private nextId = 1;
+  constructor(
+    @InjectRepository(MemberEntity)
+    private repo: Repository<MemberEntity>,
+  ) {}
 
   async create(dto: CreateMemberDto): Promise<MemberPublic> {
-    const exists = this.members.find(m => m.email === dto.email);
+    const exists = await this.repo.findOne({ where: { email: dto.email } });
     if (exists) throw new ConflictException('Email already registered');
 
-    const hashed = await bcrypt.hash(dto.password, 10);
-    const member: Member = {
-      id: this.nextId++,
+    const hashed = await bcrypt.hash(dto.password, 12);
+    const member = this.repo.create({
       name: dto.name,
       email: dto.email,
       password: hashed,
       phone: dto.phone,
       membershipPlan: dto.membershipPlan,
-      joinedAt: new Date(),
-      isActive: true,
-    };
+      role: 'member',
+    });
 
-    this.members.push(member);
-    const { password, ...result } = member;
-    return result;
+    const saved = await this.repo.save(member);
+    const { password, ...result } = saved;
+    return result as MemberPublic;
   }
 
-  findAll(): MemberPublic[] {
-    return this.members.map(({ password, ...m }) => m);
+  async findAll(): Promise<MemberPublic[]> {
+    const members = await this.repo.find();
+    return members.map(({ password, ...m }) => m) as MemberPublic[];
   }
 
-  findOne(id: number): MemberPublic {
-    const member = this.members.find(m => m.id === id);
+  async findOne(id: number): Promise<MemberPublic> {
+    const member = await this.repo.findOne({ where: { id } });
     if (!member) throw new NotFoundException('Member not found');
     const { password, ...result } = member;
-    return result;
+    return result as MemberPublic;
   }
 
-  findByEmail(email: string): Member | undefined {
-    return this.members.find(m => m.email === email);
+  async findByEmail(email: string): Promise<MemberEntity | null> {
+    return this.repo.findOne({ where: { email } });
   }
 
-  getStats(): object {
-    return {
-      total: this.members.length,
-      active: this.members.filter(m => m.isActive).length,
-      plans: {
-        basic: this.members.filter(m => m.membershipPlan === 'basic').length,
-        pro:   this.members.filter(m => m.membershipPlan === 'pro').length,
-        elite: this.members.filter(m => m.membershipPlan === 'elite').length,
-      }
-    };
+  async updatePassword(id: number, newPassword: string): Promise<void> {
+    const hashed = await bcrypt.hash(newPassword, 12);
+    await this.repo.update(id, { password: hashed });
+  }
+
+  async getStats(): Promise<object> {
+    const total  = await this.repo.count();
+    const active = await this.repo.count({ where: { isActive: true } });
+    const basic  = await this.repo.count({ where: { membershipPlan: 'basic' } });
+    const pro    = await this.repo.count({ where: { membershipPlan: 'pro' } });
+    const elite  = await this.repo.count({ where: { membershipPlan: 'elite' } });
+    return { total, active, plans: { basic, pro, elite } };
   }
 }

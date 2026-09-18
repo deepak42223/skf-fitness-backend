@@ -11,10 +11,10 @@ export class AdminService {
     private membershipService: MembershipService,
   ) {}
 
-  getDashboard(): object {
-    const members = this.membersService.findAll();
-    const messages = this.contactService.findAll();
-    const plans = this.membershipService.getPlans();
+  async getDashboard(): Promise<object> {
+    const members  = await this.membersService.findAll();
+    const messages = await this.contactService.findAll();
+    const plans    = this.membershipService.getPlans();
 
     const planStats = {
       basic: members.filter(m => m.membershipPlan === 'basic').length,
@@ -38,24 +38,24 @@ export class AdminService {
         plans: planStats,
       },
       revenue,
-      recentMembers: members.slice(-5).reverse(),
-      recentMessages: messages.slice(-5).reverse(),
+      recentMembers:   members.slice(-5).reverse(),
+      recentMessages:  messages.slice(0, 5),
     };
   }
 
-  getAllMembers(): object {
+  async getAllMembers(): Promise<object> {
     return this.membersService.findAll();
   }
 
-  getMemberById(id: number): object {
+  async getMemberById(id: number): Promise<object> {
     return this.membersService.findOne(id);
   }
 
-  getStats(): object {
+  async getStats(): Promise<object> {
     return this.membersService.getStats();
   }
 
-  getMessages(): object {
+  async getMessages(): Promise<object> {
     return this.contactService.findAll();
   }
 }

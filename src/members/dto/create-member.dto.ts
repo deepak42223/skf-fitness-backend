@@ -1,4 +1,12 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import {
+  IsEmail, IsNotEmpty, IsString, MinLength, IsEnum, Matches,
+} from 'class-validator';
+
+export enum MembershipPlan {
+  BASIC = 'basic',
+  PRO   = 'pro',
+  ELITE = 'elite',
+}
 
 export class CreateMemberDto {
   @IsString()
@@ -13,8 +21,9 @@ export class CreateMemberDto {
   password: string;
 
   @IsString()
+  @Matches(/^[0-9+\-\s]{7,15}$/, { message: 'Invalid phone number format' })
   phone: string;
 
-  @IsString()
-  membershipPlan: string; // basic | pro | elite
+  @IsEnum(MembershipPlan, { message: 'Plan must be basic, pro, or elite' })
+  membershipPlan: MembershipPlan;
 }

@@ -1,66 +1,85 @@
-import { Controller, Get, Patch, Post, Body, Param, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller, Get, Patch, Post, Body,
+  Param, ParseIntPipe, UseGuards, Request, ForbiddenException,
+} from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { ProgressDto } from './dto/progress.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { AdminGuard } from '../auth/admin.guard';
 
-// NOTE: In production, replace hardcoded userId with JWT guard:
-// @UseGuards(JwtAuthGuard) and get userId from @Request() req.user.id
-
+@UseGuards(JwtAuthGuard)
 @Controller('profile')
 export class ProfileController {
   constructor(private profileService: ProfileService) {}
 
-  // GET /api/profile/:userId — get full profile
+  private assertSelfOrAdmin(req: any, userId: number) {
+    if (req.user.role !== 'admin' && req.user.id !== userId) {
+      throw new ForbiddenException('Access denied');
+    }
+  }
+
+  // GET /api/profile/:userId
   @Get(':userId')
-  getProfile(@Param('userId', ParseIntPipe) userId: number): object {
+  getProfile(@Param('userId', ParseIntPipe) userId: number, @Request() req: any) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.getProfile(userId);
   }
 
-  // PATCH /api/profile/:userId — update profile info
+  // PATCH /api/profile/:userId
   @Patch(':userId')
   updateProfile(
     @Param('userId', ParseIntPipe) userId: number,
     @Body() dto: UpdateProfileDto,
-  ): object {
+    @Request() req: any,
+  ) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.updateProfile(userId, dto);
   }
 
-  // GET /api/profile/:userId/stats — summary stats
+  // GET /api/profile/:userId/stats
   @Get(':userId/stats')
-  getStats(@Param('userId', ParseIntPipe) userId: number): object {
+  getStats(@Param('userId', ParseIntPipe) userId: number, @Request() req: any) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.getStats(userId);
   }
 
-  // GET /api/profile/:userId/progress — progress history for charts
+  // GET /api/profile/:userId/progress
   @Get(':userId/progress')
-  getProgress(@Param('userId', ParseIntPipe) userId: number): object {
+  getProgress(@Param('userId', ParseIntPipe) userId: number, @Request() req: any) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.getProgress(userId);
   }
 
-  // POST /api/profile/:userId/progress — add progress entry
+  // POST /api/profile/:userId/progress
   @Post(':userId/progress')
   addProgress(
     @Param('userId', ParseIntPipe) userId: number,
     @Body() dto: ProgressDto,
-  ): object {
+    @Request() req: any,
+  ) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.addProgress(userId, dto);
   }
 
-  // GET /api/profile/:userId/attendance — attendance history
+  // GET /api/profile/:userId/attendance
   @Get(':userId/attendance')
-  getAttendance(@Param('userId', ParseIntPipe) userId: number): object {
+  getAttendance(@Param('userId', ParseIntPipe) userId: number, @Request() req: any) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.getAttendance(userId);
   }
 
-  // POST /api/profile/:userId/checkin — check in to gym
+  // POST /api/profile/:userId/checkin
   @Post(':userId/checkin')
-  checkIn(@Param('userId', ParseIntPipe) userId: number): object {
+  checkIn(@Param('userId', ParseIntPipe) userId: number, @Request() req: any) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.checkIn(userId);
   }
 
-  // POST /api/profile/:userId/checkout — check out from gym
+  // POST /api/profile/:userId/checkout
   @Post(':userId/checkout')
-  checkOut(@Param('userId', ParseIntPipe) userId: number): object {
+  checkOut(@Param('userId', ParseIntPipe) userId: number, @Request() req: any) {
+    this.assertSelfOrAdmin(req, userId);
     return this.profileService.checkOut(userId);
   }
 }

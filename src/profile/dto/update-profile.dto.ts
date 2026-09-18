@@ -1,4 +1,6 @@
-import { IsOptional, IsString, IsNumber, IsEnum, Min, Max } from 'class-validator';
+import {
+  IsOptional, IsString, IsNumber, IsEnum, Min, Max, Matches,
+} from 'class-validator';
 
 export class UpdateProfileDto {
   @IsOptional()
@@ -7,6 +9,7 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @IsString()
+  @Matches(/^[0-9+\-\s]{7,15}$/, { message: 'Invalid phone number format' })
   phone?: string;
 
   @IsOptional()
@@ -20,10 +23,12 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @IsNumber()
+  @Min(50) @Max(300)
   height_cm?: number;
 
   @IsOptional()
   @IsNumber()
+  @Min(20) @Max(500)
   weight_kg?: number;
 
   @IsOptional()
@@ -44,5 +49,6 @@ export class UpdateProfileDto {
 
   @IsOptional()
   @IsString()
+  @Matches(/^[0-9+\-\s]{7,15}$/, { message: 'Invalid emergency phone format' })
   emergency_phone?: string;
 }
