@@ -175,4 +175,23 @@ export class BookingsService {
 
     return { message: 'Booking cancelled successfully' };
   }
+
+  /**
+   * Confirm booking after successful payment
+   */
+  async confirmBookingPayment(bookingId: number, bookingType: 'class' | 'trainer', paymentId: number): Promise<void> {
+    if (bookingType === 'class') {
+      const booking = await this.classBookingRepo.findOne({ where: { id: bookingId } });
+      if (booking && booking.status === 'pending') {
+        booking.status = 'confirmed';
+        await this.classBookingRepo.save(booking);
+      }
+    } else {
+      const booking = await this.trainerBookingRepo.findOne({ where: { id: bookingId } });
+      if (booking && booking.status === 'pending') {
+        booking.status = 'confirmed';
+        await this.trainerBookingRepo.save(booking);
+      }
+    }
+  }
 }

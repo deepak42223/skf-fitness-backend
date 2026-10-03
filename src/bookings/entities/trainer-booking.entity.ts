@@ -41,7 +41,7 @@ export class TrainerBookingEntity {
   status: string;
 
   @Column({ type: 'text', nullable: true })
-  notes: string;
+  notes: string | null;
 
   @CreateDateColumn()
   createdAt: Date;

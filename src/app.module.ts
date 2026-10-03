@@ -11,6 +11,7 @@ import { ProfileModule }    from './profile/profile.module';
 import { AdminModule }      from './admin/admin.module';
 import { BookingsModule }   from './bookings/bookings.module';
 import { PaymentsModule }   from './payments/payments.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { PaymentsModule }   from './payments/payments.module';
     AdminModule,
     BookingsModule,
     PaymentsModule,
+    NotificationsModule,
   ],
   providers: [
     // Apply ThrottlerGuard globally to every route

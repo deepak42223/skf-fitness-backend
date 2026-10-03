@@ -1,18 +1,15 @@
-import { IsNumber, Min, IsEnum, IsString, IsOptional, IsObject } from 'class-validator';
+import { IsNumber, IsString, IsEnum, IsOptional, IsObject, Min } from 'class-validator';
 
 export class CreateOrderDto {
   @IsNumber()
   @Min(1)
   amount: number;
 
-  @IsEnum(['membership', 'class', 'trainer'])
-  purpose: 'membership' | 'class' | 'trainer';
-
   @IsString()
-  @IsOptional()
-  notes?: string;
+  @IsEnum(['membership', 'class', 'trainer', 'other'])
+  purpose: string;
 
-  @IsObject()
   @IsOptional()
-  metadata?: any;
+  @IsObject()
+  metadata?: Record<string, any>;
 }

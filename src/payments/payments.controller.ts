@@ -1,5 +1,13 @@
 import {
-  Controller, Post, Get, Body, UseGuards, Request, Headers,
+  Controller,
+  Post,
+  Get,
+  Body,
+  Param,
+  ParseIntPipe,
+  UseGuards,
+  Request,
+  ForbiddenException,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -10,33 +18,49 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 export class PaymentsController {
   constructor(private paymentsService: PaymentsService) {}
 
-  // POST /api/payments/create-order - Protected endpoint
+  /**
+   * Create payment order (protected)
+   */
   @UseGuards(JwtAuthGuard)
   @Post('create-order')
-  createOrder(@Body() dto: CreateOrderDto, @Request() req: any) {
+  async createOrder(@Request() req: any, @Body() dto: CreateOrderDto) {
     return this.paymentsService.createOrder(req.user.id, dto);
   }
 
-  // POST /api/payments/verify - Protected endpoint
+  /**
+   * Verify payment (protected)
+   */
   @UseGuards(JwtAuthGuard)
   @Post('verify')
-  verifyPayment(@Body() dto: VerifyPaymentDto, @Request() req: any) {
-    return this.paymentsService.verifyPayment(req.user.id, dto);
+  async verifyPayment(@Body() dto: VerifyPaymentDto) {
+    return this.paymentsService.verifyPayment(dto);
   }
 
-  // GET /api/payments/my-payments - Protected endpoint
+  /**
+   * Get user's payment history (protected)
+   */
   @UseGuards(JwtAuthGuard)
   @Get('my-payments')
-  getMyPayments(@Request() req: any) {
+  async getMyPayments(@Request() req: any) {
     return this.paymentsService.getPaymentHistory(req.user.id);
   }
 
-  // POST /api/payments/webhook - Public endpoint (no JWT guard)
-  @Post('webhook')
-  handleWebhook(
-    @Headers('x-razorpay-signature') signature: string,
-    @Body() body: any,
-  ) {
-    return this.paymentsService.handleWebhook(body, signature);
+  /**
+   * Get single payment (protected)
+   */
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  async getPayment(@Param('id', ParseIntPipe) id: number, @Request() req: any) {
+    return this.paymentsService.getPayment(id, req.user.id);
+  }
+
+  /**
+   * Get Razorpay public key (public endpoint)
+   */
+  @Get('config/razorpay-key')
+  getRazorpayKey() {
+    return {
+      key: this.paymentsService.getRazorpayKey(),
+    };
   }
 }
