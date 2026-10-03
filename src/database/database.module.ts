@@ -6,6 +6,7 @@ import { ContactEntity } from '../contact/contact.entity';
 import { ProfileEntity } from '../profile/profile.entity';
 import { ClassBookingEntity } from '../bookings/entities/class-booking.entity';
 import { TrainerBookingEntity } from '../bookings/entities/trainer-booking.entity';
+import { PaymentEntity } from '../payments/payment.entity';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { TrainerBookingEntity } from '../bookings/entities/trainer-booking.entit
       useFactory: (config: ConfigService) => ({
         type: 'better-sqlite3',
         database: config.get<string>('DB_PATH', './skf-data.sqlite'),
-        entities: [MemberEntity, ContactEntity, ProfileEntity, ClassBookingEntity, TrainerBookingEntity],
+        entities: [MemberEntity, ContactEntity, ProfileEntity, ClassBookingEntity, TrainerBookingEntity, PaymentEntity],
         synchronize: true, // auto-creates tables — fine for SQLite/dev; use migrations for PostgreSQL prod
         logging: false,
       }),

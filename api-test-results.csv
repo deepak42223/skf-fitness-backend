@@ -1,0 +1,6 @@
+"Test","Status","Method","Endpoint"
+"GET Membership Plans","PASS","GET","http://localhost:3000/api/membership/plans"
+"POST Contact Form","PASS","POST","http://localhost:3000/api/contact"
+"POST Register New Member","PASS","POST","http://localhost:3000/api/members"
+"POST Login","PASS","POST","http://localhost:3000/api/auth/login"
+"POST Forgot Password","PASS","POST","http://localhost:3000/api/auth/forgot-password"
