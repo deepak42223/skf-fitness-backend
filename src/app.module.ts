@@ -9,6 +9,7 @@ import { ContactModule }    from './contact/contact.module';
 import { MembershipModule } from './membership/membership.module';
 import { ProfileModule }    from './profile/profile.module';
 import { AdminModule }      from './admin/admin.module';
+import { BookingsModule }   from './bookings/bookings.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AdminModule }      from './admin/admin.module';
     MembershipModule,
     ProfileModule,
     AdminModule,
+    BookingsModule,
   ],
   providers: [
     // Apply ThrottlerGuard globally to every route
