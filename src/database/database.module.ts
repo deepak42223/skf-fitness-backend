@@ -6,7 +6,7 @@ import { ContactEntity } from '../contact/contact.entity';
 import { ProfileEntity } from '../profile/profile.entity';
 import { ClassBookingEntity } from '../bookings/entities/class-booking.entity';
 import { TrainerBookingEntity } from '../bookings/entities/trainer-booking.entity';
-import { PaymentEntity } from '../payments/payment.entity';
+import { PaymentEntity } from '../payments/entities/payment.entity';
 
 @Module({
   imports: [

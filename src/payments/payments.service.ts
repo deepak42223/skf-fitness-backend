@@ -28,20 +28,63 @@ export class PaymentsService {
   }
 
   /**
-   * Create a payment order
+   * Create a payment order — calls real Razorpay API
    */
   async createOrder(memberId: number, dto: CreateOrderDto): Promise<{
     orderId: string;
-    razorpayKeyId: string;
+    razorpayOrderId: string;
+    keyId: string;
     amount: number;
     currency: string;
   }> {
     // Generate internal order ID
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // In production, this would call Razorpay API to create order
-    // For now, simulate the order creation
-    const razorpayOrderId = `rzp_${orderId}`;
+    // Call real Razorpay API to create order
+    const https = await import('https');
+    const razorpayOrderId: string = await new Promise((resolve, reject) => {
+      const body = JSON.stringify({
+        amount: dto.amount * 100, // Razorpay expects paise
+        currency: 'INR',
+        receipt: orderId,
+      });
+
+      const credentials = Buffer.from(
+        `${this.razorpayKeyId}:${this.razorpayKeySecret}`
+      ).toString('base64');
+
+      const options = {
+        hostname: 'api.razorpay.com',
+        path: '/v1/orders',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Basic ${credentials}`,
+          'Content-Length': Buffer.byteLength(body),
+        },
+      };
+
+      const req = https.request(options, (res) => {
+        let data = '';
+        res.on('data', chunk => data += chunk);
+        res.on('end', () => {
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.id) {
+              resolve(parsed.id);
+            } else {
+              reject(new Error(parsed.error?.description || 'Razorpay order creation failed'));
+            }
+          } catch {
+            reject(new Error('Invalid Razorpay response'));
+          }
+        });
+      });
+
+      req.on('error', reject);
+      req.write(body);
+      req.end();
+    });
 
     // Save payment record
     const payment = this.paymentRepo.create({
@@ -59,7 +102,8 @@ export class PaymentsService {
 
     return {
       orderId,
-      razorpayKeyId: this.razorpayKeyId,
+      razorpayOrderId,
+      keyId: this.razorpayKeyId,
       amount: dto.amount,
       currency: 'INR',
     };
