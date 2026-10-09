@@ -40,51 +40,64 @@ export class PaymentsService {
     // Generate internal order ID
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    // Call real Razorpay API to create order
-    const https = await import('https');
-    const razorpayOrderId: string = await new Promise((resolve, reject) => {
-      const body = JSON.stringify({
-        amount: dto.amount * 100, // Razorpay expects paise
-        currency: 'INR',
-        receipt: orderId,
-      });
+    let razorpayOrderId: string;
 
-      const credentials = Buffer.from(
-        `${this.razorpayKeyId}:${this.razorpayKeySecret}`
-      ).toString('base64');
-
-      const options = {
-        hostname: 'api.razorpay.com',
-        path: '/v1/orders',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Basic ${credentials}`,
-          'Content-Length': Buffer.byteLength(body),
-        },
-      };
-
-      const req = https.request(options, (res) => {
-        let data = '';
-        res.on('data', chunk => data += chunk);
-        res.on('end', () => {
-          try {
-            const parsed = JSON.parse(data);
-            if (parsed.id) {
-              resolve(parsed.id);
-            } else {
-              reject(new Error(parsed.error?.description || 'Razorpay order creation failed'));
-            }
-          } catch {
-            reject(new Error('Invalid Razorpay response'));
-          }
+    try {
+      // Call real Razorpay API to create order
+      const https = await import('https');
+      razorpayOrderId = await new Promise((resolve, reject) => {
+        const body = JSON.stringify({
+          amount: dto.amount * 100, // Razorpay expects paise
+          currency: 'INR',
+          receipt: orderId,
         });
-      });
 
-      req.on('error', reject);
-      req.write(body);
-      req.end();
-    });
+        const credentials = Buffer.from(
+          `${this.razorpayKeyId}:${this.razorpayKeySecret}`
+        ).toString('base64');
+
+        const options = {
+          hostname: 'api.razorpay.com',
+          path: '/v1/orders',
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Basic ${credentials}`,
+            'Content-Length': Buffer.byteLength(body),
+          },
+        };
+
+        const req = https.request(options, (res) => {
+          let data = '';
+          res.on('data', (chunk: string) => data += chunk);
+          res.on('end', () => {
+            try {
+              const parsed = JSON.parse(data);
+              this.logger.log(`Razorpay response: ${JSON.stringify(parsed)}`);
+              if (parsed.id) {
+                resolve(parsed.id);
+              } else {
+                reject(new Error(parsed.error?.description || `Razorpay error: ${JSON.stringify(parsed)}`));
+              }
+            } catch (e) {
+              reject(new Error(`Invalid Razorpay response: ${data}`));
+            }
+          });
+        });
+
+        req.on('error', (e: Error) => {
+          this.logger.error(`Razorpay request error: ${e.message}`);
+          reject(e);
+        });
+
+        req.write(body);
+        req.end();
+      });
+    } catch (error: any) {
+      this.logger.error(`Failed to create Razorpay order: ${error.message}`);
+      // Re-throw with a clear message for the frontend
+      throw new Error(`Payment gateway error: ${error.message}`);
+    }
 
     // Save payment record
     const payment = this.paymentRepo.create({
