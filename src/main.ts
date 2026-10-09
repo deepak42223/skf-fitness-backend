@@ -11,13 +11,14 @@ async function bootstrap() {
   // ── Security headers
   app.use(helmet());
 
-  // ── CORS — exact origins only, no wildcard subdomains
+  // ── CORS — allow localhost + all production domains
   const frontendUrl = config.get<string>('FRONTEND_URL', 'http://localhost:4200');
   app.enableCors({
     origin: [
       'http://localhost:4200',
+      'https://skf-fitness.netlify.app',
       frontendUrl,
-    ],
+    ].filter((v, i, a) => a.indexOf(v) === i), // deduplicate
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
