@@ -23,8 +23,8 @@ export class PaymentsService {
     private notificationsService: NotificationsService,
   ) {
     // Use environment variables or fallback to test keys
-    this.razorpayKeyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_example';
-    this.razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || 'test_secret_key';
+    this.razorpayKeyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_TlgwMoKReaQmGC';
+    this.razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || 'wVr6Owg6bzK8H98wBh3WU6K5';
   }
 
   /**
