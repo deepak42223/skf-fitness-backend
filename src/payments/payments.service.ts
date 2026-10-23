@@ -22,13 +22,12 @@ export class PaymentsService {
     private bookingsService: BookingsService,
     private notificationsService: NotificationsService,
   ) {
-    // Use environment variables or fallback to test keys
-    this.razorpayKeyId = process.env.RAZORPAY_KEY_ID || 'rzp_test_TlgwMoKReaQmGC';
+    this.razorpayKeyId     = process.env.RAZORPAY_KEY_ID     || 'rzp_test_TlgwMoKReaQmGC';
     this.razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET || 'wVr6Owg6bzK8H98wBh3WU6K5';
   }
 
   /**
-   * Create a payment order — calls real Razorpay API
+   * Create a Razorpay payment order
    */
   async createOrder(memberId: number, dto: CreateOrderDto): Promise<{
     orderId: string;
@@ -37,17 +36,15 @@ export class PaymentsService {
     amount: number;
     currency: string;
   }> {
-    // Generate internal order ID
     const orderId = `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     let razorpayOrderId: string;
 
     try {
-      // Call real Razorpay API to create order
       const https = await import('https');
       razorpayOrderId = await new Promise((resolve, reject) => {
         const body = JSON.stringify({
-          amount: dto.amount * 100, // Razorpay expects paise
+          amount: dto.amount * 100, // paise
           currency: 'INR',
           receipt: orderId,
         });
@@ -79,7 +76,7 @@ export class PaymentsService {
               } else {
                 reject(new Error(parsed.error?.description || `Razorpay error: ${JSON.stringify(parsed)}`));
               }
-            } catch (e) {
+            } catch {
               reject(new Error(`Invalid Razorpay response: ${data}`));
             }
           });
@@ -95,11 +92,9 @@ export class PaymentsService {
       });
     } catch (error: any) {
       this.logger.error(`Failed to create Razorpay order: ${error.message}`);
-      // Re-throw with a clear message for the frontend
-      throw new Error(`Payment gateway error: ${error.message}`);
+      throw new BadRequestException(`Payment gateway error: ${error.message}`);
     }
 
-    // Save payment record
     const payment = this.paymentRepo.create({
       memberId,
       orderId,
@@ -123,23 +118,13 @@ export class PaymentsService {
   }
 
   /**
-   * Verify payment signature from Razorpay
+   * Verify Razorpay payment signature
    */
   async verifyPayment(dto: VerifyPaymentDto): Promise<{ success: boolean; message: string }> {
-    // Find payment by orderId
-    const payment = await this.paymentRepo.findOne({
-      where: { orderId: dto.orderId },
-    });
+    const payment = await this.paymentRepo.findOne({ where: { orderId: dto.orderId } });
+    if (!payment) throw new NotFoundException('Payment order not found');
+    if (payment.status === 'paid') throw new BadRequestException('Payment already verified');
 
-    if (!payment) {
-      throw new NotFoundException('Payment order not found');
-    }
-
-    if (payment.status === 'paid') {
-      throw new BadRequestException('Payment already verified');
-    }
-
-    // Verify Razorpay signature
     const isValid = this.verifyRazorpaySignature(
       dto.razorpayOrderId,
       dto.razorpayPaymentId,
@@ -152,96 +137,51 @@ export class PaymentsService {
       throw new BadRequestException('Invalid payment signature');
     }
 
-    // Update payment status
     payment.status = 'paid';
     payment.razorpayPaymentId = dto.razorpayPaymentId;
     payment.razorpaySignature = dto.razorpaySignature;
     payment.paidAt = new Date();
-
     await this.paymentRepo.save(payment);
 
-    // Handle post-payment actions based on purpose
     await this.handlePaymentSuccess(payment);
 
-    return {
-      success: true,
-      message: 'Payment verified successfully',
-    };
+    return { success: true, message: 'Payment verified successfully' };
   }
 
-  /**
-   * Verify Razorpay signature
-   */
-  private verifyRazorpaySignature(
-    orderId: string,
-    paymentId: string,
-    signature: string,
-  ): boolean {
-    // Create expected signature
+  private verifyRazorpaySignature(orderId: string, paymentId: string, signature: string): boolean {
     const text = `${orderId}|${paymentId}`;
-    const expectedSignature = crypto
+    const expected = crypto
       .createHmac('sha256', this.razorpayKeySecret)
       .update(text)
       .digest('hex');
-
-    return expectedSignature === signature;
+    return expected === signature;
   }
 
-  /**
-   * Handle post-payment success actions
-   */
   private async handlePaymentSuccess(payment: PaymentEntity): Promise<void> {
-    this.logger.log(`Processing payment success for payment ID: ${payment.id}, purpose: ${payment.purpose}`);
-    
+    this.logger.log(`Processing payment ${payment.id}, purpose: ${payment.purpose}`);
     try {
-      // Based on payment purpose, trigger appropriate actions
       switch (payment.purpose) {
-        case 'membership':
-          await this.handleMembershipPayment(payment);
-          break;
-        case 'class':
-          await this.handleClassBookingPayment(payment);
-          break;
-        case 'trainer':
-          await this.handleTrainerBookingPayment(payment);
-          break;
-        default:
-          this.logger.warn(`Unknown payment purpose: ${payment.purpose}`);
-          break;
+        case 'membership': await this.handleMembershipPayment(payment); break;
+        case 'class':      await this.handleClassBookingPayment(payment); break;
+        case 'trainer':    await this.handleTrainerBookingPayment(payment); break;
+        default: this.logger.warn(`Unknown purpose: ${payment.purpose}`);
       }
-
-      // Send payment success email
       await this.sendPaymentConfirmationEmail(payment);
-    } catch (error) {
-      this.logger.error(`Error processing payment success for payment ${payment.id}:`, error.message);
-      // Don't throw error to prevent payment verification from failing
-      // Log the error for manual review
+    } catch (error: any) {
+      this.logger.error(`Post-payment error ${payment.id}: ${error.message}`);
     }
   }
 
-  /**
-   * Handle membership payment - activate membership
-   */
   private async handleMembershipPayment(payment: PaymentEntity): Promise<void> {
     const planId = payment.metadata?.planId || payment.metadata?.plan;
-    
-    if (!planId) {
-      this.logger.warn(`No planId found in payment metadata for payment ${payment.id}`);
-      return;
-    }
-
+    if (!planId) return;
     try {
-      // Activate membership
       await this.membershipService.activateMembership(payment.memberId, planId);
-      this.logger.log(`Membership activated for member ${payment.memberId}, plan: ${planId}`);
-
-      // Send membership activation email
       const plan = this.membershipService.getPlanById(planId);
       if (plan) {
         const startDate = new Date();
         const endDate = new Date();
-        endDate.setMonth(endDate.getMonth() + 1); // 1 month validity
-
+        endDate.setMonth(endDate.getMonth() + 1);
         await this.notificationsService.sendMembershipActivated({
           memberName: payment.metadata?.memberName || 'Member',
           memberEmail: payment.metadata?.memberEmail || '',
@@ -251,28 +191,16 @@ export class PaymentsService {
           endDate,
         });
       }
-    } catch (error) {
-      this.logger.error(`Failed to activate membership for payment ${payment.id}:`, error.message);
+    } catch (error: any) {
+      this.logger.error(`Membership activation failed: ${error.message}`);
     }
   }
 
-  /**
-   * Handle class booking payment - confirm booking
-   */
   private async handleClassBookingPayment(payment: PaymentEntity): Promise<void> {
     const bookingId = payment.metadata?.bookingId;
-    
-    if (!bookingId) {
-      this.logger.warn(`No bookingId found in payment metadata for payment ${payment.id}`);
-      return;
-    }
-
+    if (!bookingId) return;
     try {
-      // Confirm booking
       await this.bookingsService.confirmBookingPayment(bookingId, 'class', payment.id);
-      this.logger.log(`Class booking ${bookingId} confirmed for payment ${payment.id}`);
-
-      // Send booking confirmation email
       await this.notificationsService.sendBookingConfirmation({
         memberName: payment.metadata?.memberName || 'Member',
         memberEmail: payment.metadata?.memberEmail || '',
@@ -282,28 +210,16 @@ export class PaymentsService {
         time: payment.metadata?.timeSlot || '',
         amount: payment.amount,
       });
-    } catch (error) {
-      this.logger.error(`Failed to confirm class booking for payment ${payment.id}:`, error.message);
+    } catch (error: any) {
+      this.logger.error(`Class booking confirm failed: ${error.message}`);
     }
   }
 
-  /**
-   * Handle trainer booking payment - confirm booking
-   */
   private async handleTrainerBookingPayment(payment: PaymentEntity): Promise<void> {
     const bookingId = payment.metadata?.bookingId;
-    
-    if (!bookingId) {
-      this.logger.warn(`No bookingId found in payment metadata for payment ${payment.id}`);
-      return;
-    }
-
+    if (!bookingId) return;
     try {
-      // Confirm booking
       await this.bookingsService.confirmBookingPayment(bookingId, 'trainer', payment.id);
-      this.logger.log(`Trainer booking ${bookingId} confirmed for payment ${payment.id}`);
-
-      // Send booking confirmation email
       await this.notificationsService.sendBookingConfirmation({
         memberName: payment.metadata?.memberName || 'Member',
         memberEmail: payment.metadata?.memberEmail || '',
@@ -314,14 +230,11 @@ export class PaymentsService {
         duration: payment.metadata?.duration,
         amount: payment.amount,
       });
-    } catch (error) {
-      this.logger.error(`Failed to confirm trainer booking for payment ${payment.id}:`, error.message);
+    } catch (error: any) {
+      this.logger.error(`Trainer booking confirm failed: ${error.message}`);
     }
   }
 
-  /**
-   * Send payment confirmation email
-   */
   private async sendPaymentConfirmationEmail(payment: PaymentEntity): Promise<void> {
     try {
       await this.notificationsService.sendPaymentSuccess({
@@ -333,51 +246,30 @@ export class PaymentsService {
         razorpayPaymentId: payment.razorpayPaymentId || '',
         paidAt: payment.paidAt || new Date(),
       });
-    } catch (error) {
-      this.logger.error(`Failed to send payment confirmation email for payment ${payment.id}:`, error.message);
+    } catch (error: any) {
+      this.logger.error(`Email failed: ${error.message}`);
     }
   }
 
-  /**
-   * Format payment purpose for display
-   */
   private formatPurpose(purpose: string): string {
-    const purposeMap: Record<string, string> = {
-      'membership': 'Membership Plan',
-      'class': 'Class Booking',
-      'trainer': 'Personal Training Session',
+    const map: Record<string, string> = {
+      membership: 'Membership Plan',
+      class: 'Class Booking',
+      trainer: 'Personal Training Session',
     };
-    return purposeMap[purpose] || purpose;
+    return map[purpose] || purpose;
   }
 
-  /**
-   * Get user's payment history
-   */
   async getPaymentHistory(memberId: number): Promise<PaymentEntity[]> {
-    return this.paymentRepo.find({
-      where: { memberId },
-      order: { createdAt: 'DESC' },
-    });
+    return this.paymentRepo.find({ where: { memberId }, order: { createdAt: 'DESC' } });
   }
 
-  /**
-   * Get single payment by ID
-   */
   async getPayment(id: number, memberId: number): Promise<PaymentEntity> {
-    const payment = await this.paymentRepo.findOne({
-      where: { id, memberId },
-    });
-
-    if (!payment) {
-      throw new NotFoundException('Payment not found');
-    }
-
+    const payment = await this.paymentRepo.findOne({ where: { id, memberId } });
+    if (!payment) throw new NotFoundException('Payment not found');
     return payment;
   }
 
-  /**
-   * Get Razorpay key for frontend
-   */
   getRazorpayKey(): string {
     return this.razorpayKeyId;
   }

@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 
@@ -35,6 +36,29 @@ async function bootstrap() {
 
   // ── Global prefix
   app.setGlobalPrefix('api');
+
+  // ── Swagger API Documentation
+  if (config.get<string>('NODE_ENV') !== 'production' || config.get<boolean>('SWAGGER_ENABLED')) {
+    const swaggerConfig = new DocumentBuilder()
+      .setTitle('SKF Fitness API')
+      .setDescription('REST API for SKF Fitness gym management system')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('auth', 'Authentication endpoints')
+      .addTag('members', 'Member management')
+      .addTag('membership', 'Membership plans and activation')
+      .addTag('profile', 'Member profiles and progress tracking')
+      .addTag('bookings', 'Class and trainer booking')
+      .addTag('payments', 'Razorpay payment integration')
+      .addTag('contact', 'Contact form submissions')
+      .addTag('admin', 'Admin operations')
+      .addTag('health', 'Health check endpoint')
+      .build();
+
+    const document = SwaggerModule.createDocument(app, swaggerConfig);
+    SwaggerModule.setup('api/docs', app, document);
+    console.log('Swagger API documentation available at /api/docs');
+  }
 
   const port = config.get<number>('PORT', 3000);
   await app.listen(port, '0.0.0.0');
