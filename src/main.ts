@@ -9,6 +9,11 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const config = app.get(ConfigService);
 
+  // ── Trust first proxy for correct IP detection
+  // Required for production deployments behind reverse proxies (Render, Cloudflare, Nginx)
+  const expressApp = app.getHttpAdapter().getInstance();
+  expressApp.set('trust proxy', 1);
+
   // ── Security headers
   app.use(helmet());
 

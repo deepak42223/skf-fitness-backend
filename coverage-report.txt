@@ -1,0 +1,101 @@
+
+> skf-backend@0.0.1 test:cov
+> node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js --coverage
+
+PASS src/profile/profile.service.spec.ts
+PASS src/payments/payments.service.spec.ts
+PASS src/app.controller.spec.ts
+PASS src/auth/auth.service.spec.ts
+PASS src/auth/auth.controller.spec.ts
+--------------------------------|---------|----------|---------|---------|---------------------------------------------------
+File                            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                 
+--------------------------------|---------|----------|---------|---------|---------------------------------------------------
+All files                       |   33.76 |     32.8 |   24.24 |   32.92 |                                                   
+ src                            |   40.62 |       75 |     100 |   34.61 |                                                   
+  app.controller.ts             |     100 |       75 |     100 |     100 | 6                                                 
+  app.module.ts                 |       0 |      100 |     100 |       0 | 1-47                                              
+  app.service.ts                |     100 |      100 |     100 |     100 |                                                   
+ src/admin                      |       0 |        0 |       0 |       0 |                                                   
+  admin.controller.ts           |       0 |        0 |       0 |       0 | 1-40                                              
+  admin.module.ts               |       0 |      100 |     100 |       0 | 1-13                                              
+  admin.service.ts              |       0 |        0 |       0 |       0 | 1-59                                              
+ src/auth                       |   30.92 |       25 |      20 |   30.88 |                                                   
+  admin.guard.ts                |       0 |        0 |       0 |       0 | 1-13                                              
+  auth.controller.ts            |       0 |        0 |       0 |       0 | 1-83                                              
+  auth.module.ts                |       0 |        0 |       0 |       0 | 1-47                                              
+  auth.service.ts               |   61.03 |    60.86 |   44.44 |   58.33 | 72,104-190                                        
+  jwt-auth.guard.ts             |       0 |      100 |     100 |       0 | 1-5                                               
+  jwt.strategy.ts               |       0 |        0 |       0 |       0 | 1-29                                              
+ src/auth/dto                   |       0 |      100 |     100 |       0 |                                                   
+  forgot-password.dto.ts        |       0 |      100 |     100 |       0 | 1-7                                               
+  login.dto.ts                  |       0 |      100 |     100 |       0 | 1-12                                              
+  reset-password.dto.ts         |       0 |      100 |     100 |       0 | 1-16                                              
+  send-otp.dto.ts               |       0 |      100 |     100 |       0 | 1-12                                              
+  verify-otp.dto.ts             |       0 |      100 |     100 |       0 | 1-12                                              
+ src/auth/entities              |      92 |       75 |       0 |   90.47 |                                                   
+  email-otp.entity.ts           |   92.85 |       75 |       0 |   91.66 | 25                                                
+  reset-token.entity.ts         |    90.9 |       75 |       0 |   88.88 | 19                                                
+ src/auth/guards                |      80 |       40 |     100 |   76.92 |                                                   
+  custom-throttler.guard.ts     |      80 |       40 |     100 |   76.92 | 39-45                                             
+ src/bookings                   |    7.69 |     8.82 |       0 |    6.12 |                                                   
+  bookings.controller.ts        |       0 |        0 |       0 |       0 | 1-50                                              
+  bookings.module.ts            |       0 |      100 |     100 |       0 | 1-14                                              
+  bookings.service.ts           |   10.52 |    10.71 |       0 |     8.1 | 13-193                                            
+ src/bookings/dto               |       0 |      100 |     100 |       0 |                                                   
+  create-class-booking.dto.ts   |       0 |      100 |     100 |       0 | 1-19                                              
+  create-trainer-booking.dto.ts |       0 |      100 |     100 |       0 | 1-30                                              
+ src/bookings/entities          |     100 |    83.33 |     100 |     100 |                                                   
+  class-booking.entity.ts       |     100 |    83.33 |     100 |     100 | 35                                                
+  trainer-booking.entity.ts     |     100 |    83.33 |     100 |     100 | 47                                                
+ src/contact                    |       0 |        0 |       0 |       0 |                                                   
+  contact.controller.ts         |       0 |        0 |       0 |       0 | 1-21                                              
+  contact.entity.ts             |       0 |        0 |     100 |       0 | 1-24                                              
+  contact.module.ts             |       0 |      100 |     100 |       0 | 1-13                                              
+  contact.service.ts            |       0 |        0 |       0 |       0 | 1-25                                              
+ src/contact/dto                |       0 |      100 |     100 |       0 |                                                   
+  contact.dto.ts                |       0 |      100 |     100 |       0 | 1-16                                              
+ src/database                   |       0 |        0 |       0 |       0 |                                                   
+  database.module.ts            |       0 |        0 |       0 |       0 | 1-67                                              
+ src/health                     |       0 |        0 |       0 |       0 |                                                   
+  health.controller.ts          |       0 |        0 |       0 |       0 | 1-39                                              
+  health.module.ts              |       0 |      100 |     100 |       0 | 1-7                                               
+ src/members                    |   32.94 |    26.08 |    5.88 |   32.87 |                                                   
+  member.entity.ts              |    90.9 |       90 |   33.33 |   94.73 | 45                                                
+  members.controller.ts         |       0 |        0 |       0 |       0 | 1-47                                              
+  members.module.ts             |       0 |      100 |     100 |       0 | 1-13                                              
+  members.service.ts            |   22.85 |     37.5 |       0 |      20 | 14-67                                             
+ src/members/dto                |       0 |        0 |       0 |       0 |                                                   
+  create-member.dto.ts          |       0 |        0 |       0 |       0 | 1-28                                              
+ src/membership                 |   21.21 |       30 |       0 |   19.23 |                                                   
+  membership.controller.ts      |       0 |        0 |       0 |       0 | 1-11                                              
+  membership.module.ts          |       0 |      100 |     100 |       0 | 1-13                                              
+  membership.service.ts         |   41.17 |       50 |       0 |   35.71 | 10-83                                             
+ src/notifications              |   19.17 |       20 |       0 |   15.15 |                                                   
+  email.service.ts              |   18.18 |       20 |       0 |    12.9 | 16-79                                             
+  notifications.module.ts       |       0 |      100 |     100 |       0 | 1-11                                              
+  notifications.service.ts      |   24.24 |       20 |       0 |      20 | 39-357                                            
+ src/payments                   |   55.11 |    51.81 |   55.55 |   55.69 |                                                   
+  payment.entity.ts             |       0 |        0 |       0 |       0 | 1-62                                              
+  payments.controller.ts        |       0 |        0 |       0 |       0 | 1-79                                              
+  payments.module.ts            |       0 |      100 |     100 |       0 | 1-21                                              
+  payments.service.ts           |   83.62 |    69.51 |   83.33 |   84.61 | 77-80,86-87,94-95,167,171,195,214,234,250,264-270 
+ src/payments/dto               |       0 |        0 |     100 |       0 |                                                   
+  create-order.dto.ts           |       0 |        0 |     100 |       0 | 1-14                                              
+  verify-payment.dto.ts         |       0 |      100 |     100 |       0 | 1-18                                              
+ src/payments/entities          |   95.23 |       70 |       0 |   94.73 |                                                   
+  payment.entity.ts             |   95.23 |       70 |       0 |   94.73 | 23                                                
+ src/profile                    |   56.63 |    57.14 |   44.82 |      58 |                                                   
+  profile.controller.ts         |       0 |        0 |       0 |       0 | 1-83                                              
+  profile.entity.ts             |   89.47 |     87.5 |       0 |   93.75 | 12                                                
+  profile.module.ts             |       0 |      100 |     100 |       0 | 1-13                                              
+  profile.service.ts            |   92.15 |    94.44 |   76.47 |   95.55 | 68,84                                             
+ src/profile/dto                |       0 |      100 |     100 |       0 |                                                   
+  progress.dto.ts               |       0 |      100 |     100 |       0 | 1-21                                              
+  update-profile.dto.ts         |       0 |      100 |     100 |       0 | 1-53                                              
+--------------------------------|---------|----------|---------|---------|---------------------------------------------------
+
+Test Suites: 5 passed, 5 total
+Tests:       43 passed, 43 total
+Snapshots:   0 total
+Time:        7.777 s
+Ran all test suites.

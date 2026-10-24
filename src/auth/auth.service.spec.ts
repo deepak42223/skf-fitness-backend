@@ -6,6 +6,8 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { AuthService } from './auth.service';
 import { MembersService } from '../members/members.service';
 import { ResetTokenEntity } from './entities/reset-token.entity';
+import { EmailOtpEntity } from './entities/email-otp.entity';
+import { NotificationsService } from '../notifications/notifications.service';
 import * as bcrypt from 'bcryptjs';
 
 describe('AuthService', () => {
@@ -13,6 +15,7 @@ describe('AuthService', () => {
   let membersService: jest.Mocked<MembersService>;
   let jwtService: jest.Mocked<JwtService>;
   let resetTokenRepo: jest.Mocked<Repository<ResetTokenEntity>>;
+  let notificationsService: jest.Mocked<NotificationsService>;
 
   const mockMember = {
     id: 1,
@@ -28,6 +31,7 @@ describe('AuthService', () => {
     const mockMembersService = {
       findByEmail: jest.fn(),
       updatePassword: jest.fn(),
+      markEmailVerified: jest.fn(),
     };
 
     const mockJwtService = {
@@ -38,6 +42,18 @@ describe('AuthService', () => {
       save: jest.fn(),
       findOne: jest.fn(),
       delete: jest.fn().mockResolvedValue({ affected: 1 }),
+    };
+
+    const mockOtpRepo = {
+      save: jest.fn(),
+      findOne: jest.fn(),
+      delete: jest.fn(),
+      update: jest.fn(),
+    };
+
+    const mockNotificationsService = {
+      sendEmailOtp: jest.fn().mockResolvedValue(undefined),
+      sendPasswordResetEmail: jest.fn().mockResolvedValue(undefined),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -55,6 +71,14 @@ describe('AuthService', () => {
           provide: getRepositoryToken(ResetTokenEntity),
           useValue: mockResetTokenRepo,
         },
+        {
+          provide: getRepositoryToken(EmailOtpEntity),
+          useValue: mockOtpRepo,
+        },
+        {
+          provide: NotificationsService,
+          useValue: mockNotificationsService,
+        },
       ],
     }).compile();
 
@@ -62,6 +86,7 @@ describe('AuthService', () => {
     membersService = module.get(MembersService) as jest.Mocked<MembersService>;
     jwtService = module.get(JwtService) as jest.Mocked<JwtService>;
     resetTokenRepo = module.get(getRepositoryToken(ResetTokenEntity)) as jest.Mocked<Repository<ResetTokenEntity>>;
+    notificationsService = module.get(NotificationsService) as jest.Mocked<NotificationsService>;
   });
 
   describe('login', () => {

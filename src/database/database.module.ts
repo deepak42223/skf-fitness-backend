@@ -8,6 +8,7 @@ import { ClassBookingEntity } from '../bookings/entities/class-booking.entity';
 import { TrainerBookingEntity } from '../bookings/entities/trainer-booking.entity';
 import { PaymentEntity } from '../payments/entities/payment.entity';
 import { ResetTokenEntity } from '../auth/entities/reset-token.entity';
+import { EmailOtpEntity } from '../auth/entities/email-otp.entity';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ResetTokenEntity } from '../auth/entities/reset-token.entity';
           TrainerBookingEntity,
           PaymentEntity,
           ResetTokenEntity,
+          EmailOtpEntity,
         ];
 
         // SQLite configuration (default for local development)

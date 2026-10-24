@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background: #f4f4f4; margin: 0; padding: 0; }
+    .container { max-width: 600px; margin: 40px auto; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%); color: white; padding: 40px 30px; text-align: center; }
+    .header h1 { margin: 0; font-size: 28px; }
+    .header p { margin: 10px 0 0; opacity: 0.9; }
+    .content { padding: 40px 30px; }
+    .otp-box { background: #f9fafb; border: 2px dashed #2563EB; border-radius: 10px; padding: 30px; text-align: center; margin: 30px 0; }
+    .otp-code { font-size: 48px; font-weight: bold; color: #2563EB; letter-spacing: 10px; font-family: 'Courier New', monospace; }
+    .otp-label { color: #666; font-size: 14px; margin-bottom: 15px; }
+    .expiry { color: #EF4444; font-size: 14px; font-weight: bold; margin-top: 15px; }
+    .info-box { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    .info-box p { margin: 5px 0; color: #92400E; }
+    .footer { background: #f9fafb; padding: 20px 30px; text-align: center; color: #666; font-size: 14px; }
+    .footer p { margin: 5px 0; }
+    .security-note { background: #EFF6FF; border-left: 4px solid #3B82F6; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    .security-note p { margin: 5px 0; color: #1E40AF; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🔐 Email Verification</h1>
+      <p>SKF Fitness</p>
+    </div>
+    <div class="content">
+      <p>Hi {{memberName}},</p>
+      <p>Welcome to SKF Fitness! Please verify your email address to complete your registration.</p>
+      
+      <div class="otp-box">
+        <div class="otp-label">Your Verification Code</div>
+        <div class="otp-code">{{otp}}</div>
+        <div class="expiry">⏰ Expires in 10 minutes</div>
+      </div>
+      
+      <div class="info-box">
+        <p><strong>How to verify:</strong></p>
+        <p>1. Enter this code in the verification screen</p>
+        <p>2. Complete your registration</p>
+        <p>3. Start your fitness journey!</p>
+      </div>
+      
+      <div class="security-note">
+        <p><strong>🛡️ Security Tips:</strong></p>
+        <p>• Never share this code with anyone</p>
+        <p>• SKF Fitness will never ask for your OTP over phone or email</p>
+        <p>• If you didn't request this code, please ignore this email</p>
+      </div>
+      
+      <p>Need help? Contact us at support@skffitness.com</p>
+    </div>
+    <div class="footer">
+      <p><strong>SKF Fitness</strong></p>
+      <p>Building Strength, Inspiring Lives</p>
+      <p style="margin-top: 15px; font-size: 12px; color: #999;">
+        This is an automated email. Please do not reply.
+      </p>
+    </div>
+  </div>
+</body>
+</html>

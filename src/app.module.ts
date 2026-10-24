@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { DatabaseModule }   from './database/database.module';
 import { MembersModule }    from './members/members.module';
@@ -13,6 +13,7 @@ import { BookingsModule }   from './bookings/bookings.module';
 import { PaymentsModule }   from './payments/payments.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { HealthModule }     from './health/health.module';
+import { CustomThrottlerGuard } from './auth/guards/custom-throttler.guard';
 
 @Module({
   imports: [
@@ -38,8 +39,9 @@ import { HealthModule }     from './health/health.module';
     HealthModule,
   ],
   providers: [
-    // Apply ThrottlerGuard globally to every route
-    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    // Apply CustomThrottlerGuard globally to every route
+    // Uses per-user tracking for auth endpoints, IP-based for others
+    { provide: APP_GUARD, useClass: CustomThrottlerGuard },
   ],
 })
 export class AppModule {}

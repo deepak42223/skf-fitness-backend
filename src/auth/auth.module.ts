@@ -7,12 +7,15 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { MembersModule } from '../members/members.module';
+import { NotificationsModule } from '../notifications/notifications.module';
 import { ResetTokenEntity } from './entities/reset-token.entity';
+import { EmailOtpEntity } from './entities/email-otp.entity';
 
 @Module({
   imports: [
     MembersModule,
-    TypeOrmModule.forFeature([ResetTokenEntity]),
+    NotificationsModule,
+    TypeOrmModule.forFeature([ResetTokenEntity, EmailOtpEntity]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

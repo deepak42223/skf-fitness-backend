@@ -36,6 +36,9 @@ export class MemberEntity {
   @Column({ nullable: true, default: null })
   role: string; // 'admin' | 'member'
 
+  @Column({ default: false })
+  emailVerified: boolean;
+
   @CreateDateColumn()
   joinedAt: Date;
 

@@ -1,0 +1,624 @@
+
+> skf-backend@0.0.1 test
+> node --experimental-vm-modules --no-warnings node_modules/jest/bin/jest.js
+
+FAIL src/profile/profile.service.spec.ts
+  ΓùÅ ProfileService ΓÇ║ getProfile ΓÇ║ should auto-create profile if not exists
+
+    expect(received).toHaveProperty(path)
+
+    Expected path: "id"
+    Received path: []
+
+    Received value: {"member": {"id": 1}}
+
+      65 |       expect(profileRepo.create).toHaveBeenCalled();
+      66 |       expect(profileRepo.save).toHaveBeenCalled();
+    > 67 |       expect(result).toHaveProperty('id');
+         |                      ^
+      68 |     });
+      69 |   });
+      70 |
+
+      at Object.<anonymous> (profile/profile.service.spec.ts:67:22)
+
+FAIL src/auth/auth.service.spec.ts
+  ΓùÅ AuthService ΓÇ║ login ΓÇ║ should return token for valid credentials
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ login ΓÇ║ should throw UnauthorizedException for invalid email
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ login ΓÇ║ should throw UnauthorizedException for invalid password
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ login ΓÇ║ should throw UnauthorizedException for inactive account
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ forgotPassword ΓÇ║ should save reset token for valid email
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ forgotPassword ΓÇ║ should return generic message for invalid email (prevent enumeration)
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ forgotPassword ΓÇ║ should generate unique token
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ resetPassword ΓÇ║ should update password for valid token
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ resetPassword ΓÇ║ should throw BadRequestException for invalid token
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ resetPassword ΓÇ║ should throw BadRequestException for expired token
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+  ΓùÅ AuthService ΓÇ║ resetPassword ΓÇ║ should delete token after successful reset
+
+    Nest can't resolve dependencies of the AuthService (MembersService, JwtService, ?, ResetTokenEntityRepository, EmailOtpEntityRepository). Please make sure that the argument NotificationsService at index [2] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If NotificationsService is a provider, is it part of the current RootTestModule?
+    - If NotificationsService is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing NotificationsService */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      41 |     };
+      42 |
+    > 43 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      44 |       providers: [
+      45 |         AuthService,
+      46 |         {
+
+      at TestingInjector.lookupComponentInParentModules (../node_modules/@nestjs/core/injector/injector.js:300:19)
+      at TestingInjector.resolveComponentWrapper (../node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (../node_modules/@nestjs/core/injector/injector.js:150:38)
+          at async Promise.all (index 2)
+      at TestingInjector.resolveConstructorParams (../node_modules/@nestjs/core/injector/injector.js:179:27)
+      at TestingInjector.loadInstance (../node_modules/@nestjs/core/injector/injector.js:77:13)
+      at TestingInjector.loadProvider (../node_modules/@nestjs/core/injector/injector.js:111:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (../node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at ../node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (../node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (../node_modules/@nestjs/testing/testing-module.builder.js:119:9)
+      at TestingModuleBuilder.compile (../node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (auth/auth.service.spec.ts:43:35)
+
+[Nest] 13372  - 24/10/2026, 11:43:26 am   ERROR [PaymentsService] Email failed: this.notificationsService.sendPaymentSuccess is not a function
+[Nest] 13372  - 24/10/2026, 11:43:26 am   ERROR [PaymentsService] Email failed: this.notificationsService.sendPaymentSuccess is not a function
+[Nest] 13372  - 24/10/2026, 11:43:26 am   ERROR [PaymentsService] Email failed: this.notificationsService.sendPaymentSuccess is not a function
+FAIL src/payments/payments.service.spec.ts
+  ΓùÅ PaymentsService ΓÇ║ createOrder ΓÇ║ should create order and save to database
+
+    TypeError: this.paymentRepo.create is not a function
+
+       96 |     }
+       97 |
+    >  98 |     const payment = this.paymentRepo.create({
+          |                                      ^
+       99 |       memberId,
+      100 |       orderId,
+      101 |       razorpayOrderId,
+
+      at PaymentsService.createOrder (payments/payments.service.ts:98:38)
+      at Object.<anonymous> (payments/payments.service.spec.ts:111:22)
+
+  ΓùÅ PaymentsService ΓÇ║ createOrder ΓÇ║ should throw BadRequestException on Razorpay error
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected constructor: BadRequestException
+    Received constructor: TypeError
+
+    Received message: "this.paymentRepo.create is not a function"
+
+           96 |     }
+           97 |
+        >  98 |     const payment = this.paymentRepo.create({
+              |                                      ^
+           99 |       memberId,
+          100 |       orderId,
+          101 |       razorpayOrderId,
+
+      at PaymentsService.createOrder (payments/payments.service.ts:98:38)
+      at Object.<anonymous> (payments/payments.service.spec.ts:130:7)
+      at Object.toThrow (../node_modules/expect/build/index.js:2155:20)
+      at Object.<anonymous> (payments/payments.service.spec.ts:130:57)
+
+  ΓùÅ PaymentsService ΓÇ║ verifyPayment ΓÇ║ should verify valid signature and mark paid
+
+    TypeError: Cannot set properties of undefined (setting 'utils')
+
+      153 |       // Mock crypto validation
+      154 |       const mockValidateSignature = jest.fn().mockReturnValue(true);
+    > 155 |       (service as any).razorpay.utils = {
+          |                                      ^
+      156 |         validatePaymentVerification: mockValidateSignature,
+      157 |       };
+      158 |
+
+      at Object.<anonymous> (payments/payments.service.spec.ts:155:38)
+
+  ΓùÅ PaymentsService ΓÇ║ verifyPayment ΓÇ║ should throw BadRequestException for invalid signature
+
+    TypeError: Cannot set properties of undefined (setting 'utils')
+
+      173 |
+      174 |       const mockValidateSignature = jest.fn().mockReturnValue(false);
+    > 175 |       (service as any).razorpay.utils = {
+          |                                      ^
+      176 |         validatePaymentVerification: mockValidateSignature,
+      177 |       };
+      178 |
+
+      at Object.<anonymous> (payments/payments.service.spec.ts:175:38)
+
+  ΓùÅ PaymentsService ΓÇ║ handlePaymentSuccess ΓÇ║ should activate membership for membership payment
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 1, "monthly"
+
+    Number of calls: 0
+
+      220 |       await (service as any).handlePaymentSuccess(payment);
+      221 |
+    > 222 |       expect(membershipService.activateMembership).toHaveBeenCalledWith(1, 'monthly');
+          |                                                    ^
+      223 |       expect(notificationsService.sendPaymentConfirmation).toHaveBeenCalled();
+      224 |     });
+      225 |
+
+      at Object.<anonymous> (payments/payments.service.spec.ts:222:52)
+
+  ΓùÅ PaymentsService ΓÇ║ handlePaymentSuccess ΓÇ║ should confirm booking for class payment
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 5, "class"
+
+    Number of calls: 0
+
+      236 |       await (service as any).handlePaymentSuccess(payment);
+      237 |
+    > 238 |       expect(bookingsService.confirmBooking).toHaveBeenCalledWith(5, 'class');
+          |                                              ^
+      239 |       expect(notificationsService.sendPaymentConfirmation).toHaveBeenCalled();
+      240 |     });
+      241 |
+
+      at Object.<anonymous> (payments/payments.service.spec.ts:238:46)
+
+  ΓùÅ PaymentsService ΓÇ║ handlePaymentSuccess ΓÇ║ should confirm booking for trainer payment
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: 10, "trainer"
+
+    Number of calls: 0
+
+      252 |       await (service as any).handlePaymentSuccess(payment);
+      253 |
+    > 254 |       expect(bookingsService.confirmBooking).toHaveBeenCalledWith(10, 'trainer');
+          |                                              ^
+      255 |       expect(notificationsService.sendPaymentConfirmation).toHaveBeenCalled();
+      256 |     });
+      257 |   });
+
+      at Object.<anonymous> (payments/payments.service.spec.ts:254:46)
+
+  ΓùÅ PaymentsService ΓÇ║ getRazorpayKey ΓÇ║ should return Razorpay public key
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "test_key_id"
+    Received: "rzp_test_TlgwMoKReaQmGC"
+
+      260 |     it('should return Razorpay public key', () => {
+      261 |       const key = service.getRazorpayKey();
+    > 262 |       expect(key).toBe('test_key_id');
+          |                   ^
+      263 |     });
+      264 |   });
+      265 | });
+
+      at Object.<anonymous> (payments/payments.service.spec.ts:262:19)
+
+PASS src/app.controller.spec.ts
+PASS src/auth/auth.controller.spec.ts
+
+Test Suites: 3 failed, 2 passed, 5 total
+Tests:       20 failed, 24 passed, 44 total
+Snapshots:   0 total
+Time:        8.466 s
+Ran all test suites.

@@ -8,6 +8,10 @@ import { MembersService } from '../members/members.service';
 import { LoginDto } from './dto/login.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetTokenEntity } from './entities/reset-token.entity';
+import { EmailOtpEntity } from './entities/email-otp.entity';
+import { SendOtpDto } from './dto/send-otp.dto';
+import { VerifyOtpDto } from './dto/verify-otp.dto';
+import { NotificationsService } from '../notifications/notifications.service';
 import * as bcrypt from 'bcryptjs';
 
 @Injectable()
@@ -15,8 +19,11 @@ export class AuthService {
   constructor(
     private membersService: MembersService,
     private jwtService: JwtService,
+    private notificationsService: NotificationsService,
     @InjectRepository(ResetTokenEntity)
     private resetTokenRepo: Repository<ResetTokenEntity>,
+    @InjectRepository(EmailOtpEntity)
+    private otpRepo: Repository<EmailOtpEntity>,
   ) {}
 
   async login(dto: LoginDto): Promise<object> {
@@ -88,5 +95,98 @@ export class AuthService {
     await this.resetTokenRepo.delete({ token });
 
     return { message: 'Password updated successfully' };
+  }
+
+  /**
+   * Send OTP to email for verification
+   */
+  async sendOtp(dto: SendOtpDto): Promise<object> {
+    const { email, purpose } = dto;
+
+    // Check if email already exists for registration purpose
+    if (purpose === 'registration') {
+      const existingMember = await this.membersService.findByEmail(email);
+      if (existingMember) {
+        throw new BadRequestException('Email already registered');
+      }
+    }
+
+    // Generate 6-digit OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+
+    // Delete any existing unverified OTPs for this email
+    await this.otpRepo.delete({ email, verified: false });
+
+    // Save OTP to database
+    await this.otpRepo.save({
+      email,
+      otp,
+      purpose,
+      expiresAt,
+      verified: false,
+    });
+
+    // Send OTP via email
+    try {
+      await this.notificationsService.sendEmailOtp(email, otp, 'New User');
+    } catch (error) {
+      // If email fails, still return success to avoid leaking info
+      console.error('Failed to send OTP email:', error);
+    }
+
+    // Clean up expired OTPs (async, don't await)
+    this.otpRepo.delete({ expiresAt: LessThan(new Date()) }).catch(err => {
+      console.error('Failed to cleanup expired OTPs:', err);
+    });
+
+    return {
+      message: 'OTP sent successfully to your email',
+      expiresIn: 600, // seconds
+    };
+  }
+
+  /**
+   * Verify OTP
+   */
+  async verifyOtp(dto: VerifyOtpDto): Promise<object> {
+    const { email, otp } = dto;
+
+    const entry = await this.otpRepo.findOne({
+      where: { email, otp, verified: false },
+      order: { createdAt: 'DESC' },
+    });
+
+    if (!entry) {
+      throw new BadRequestException('Invalid OTP');
+    }
+
+    if (new Date() > entry.expiresAt) {
+      await this.otpRepo.delete({ id: entry.id });
+      throw new BadRequestException('OTP has expired. Please request a new one.');
+    }
+
+    // Mark OTP as verified
+    await this.otpRepo.update(entry.id, { verified: true });
+
+    // If this is for registration, mark the member's email as verified
+    if (entry.purpose === 'registration') {
+      const member = await this.membersService.findByEmail(email);
+      if (member) {
+        await this.membersService.markEmailVerified(member.id);
+      }
+    }
+
+    return {
+      message: 'Email verified successfully',
+      verified: true,
+    };
+  }
+
+  /**
+   * Resend OTP
+   */
+  async resendOtp(email: string): Promise<object> {
+    return this.sendOtp({ email, purpose: 'registration' });
   }
 }

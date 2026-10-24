@@ -1,5 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EmailService } from './email.service';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as Handlebars from 'handlebars';
 
 export interface BookingDetails {
   memberName: string;
@@ -65,6 +68,30 @@ export class NotificationsService {
       subject: `Welcome to SKF Fitness ${details.planName} Plan!`,
       html,
     });
+  }
+
+  async sendEmailOtp(email: string, otp: string, memberName: string = 'User'): Promise<void> {
+    try {
+      const templatePath = path.join(__dirname, 'templates', 'email-otp.hbs');
+      const templateSource = fs.readFileSync(templatePath, 'utf8');
+      const template = Handlebars.compile(templateSource);
+      
+      const html = template({
+        memberName,
+        otp,
+      });
+
+      await this.emailService.sendEmail({
+        to: email,
+        subject: 'Verify Your Email - SKF Fitness',
+        html,
+      });
+
+      this.logger.log(`OTP email sent to ${email}`);
+    } catch (error) {
+      this.logger.error(`Failed to send OTP email to ${email}:`, error.message);
+      throw error;
+    }
   }
 
   private generateBookingConfirmationEmail(details: BookingDetails): string {

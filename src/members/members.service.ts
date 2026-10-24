@@ -54,6 +54,10 @@ export class MembersService {
     await this.repo.update(id, { password: hashed });
   }
 
+  async markEmailVerified(id: number): Promise<void> {
+    await this.repo.update(id, { emailVerified: true });
+  }
+
   async getStats(): Promise<object> {
     const total  = await this.repo.count();
     const active = await this.repo.count({ where: { isActive: true } });
