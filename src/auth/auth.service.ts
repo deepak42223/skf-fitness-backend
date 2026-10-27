@@ -127,12 +127,20 @@ export class AuthService {
       verified: false,
     });
 
+    // DEVELOPMENT: Log OTP to console for testing
+    console.log('='.repeat(60));
+    console.log('🔐 OTP GENERATED FOR:', email);
+    console.log('📧 OTP CODE:', otp);
+    console.log('⏰ EXPIRES IN: 10 minutes');
+    console.log('='.repeat(60));
+
     // Send OTP via email
     try {
       await this.notificationsService.sendEmailOtp(email, otp, 'New User');
     } catch (error) {
       // If email fails, still return success to avoid leaking info
       console.error('Failed to send OTP email:', error);
+      console.log('ℹ️  EMAIL FAILED - Use OTP from console above');
     }
 
     // Clean up expired OTPs (async, don't await)
